@@ -9,7 +9,7 @@ from pathlib import Path
 from garmin_personal_api import GarminPersonalApiClient, PersonalApiAuthenticator, resolve_api_key
 
 OUT = Path(os.getenv("OUT_PATH", "data/activities.csv"))
-DAYS = int(os.getenv("FETCH_DAYS", "14"))  # 何日分さかのぼって取得するか
+DAYS = int(os.getenv("FETCH_DAYS") or "14")  # 何日分さかのぼるか。0 で全期間を取得
 
 COLUMNS = [
     "アクティビティID", "アクティビティタイプ", "日付", "タイトル", "距離", "カロリー", "タイム",
@@ -74,11 +74,15 @@ def fetch(client, start, end):
     """期間内のアクティビティを100件ずつページングして全件取得"""
     acts, offset = [], 0
     while True:
-        page = client.search_activities(start=offset, limit=100,
-                                        start_date=start, end_date=end)
+        if start is None:  # 全期間
+            page = client.search_activities(start=offset, limit=100)
+        else:
+            page = client.search_activities(start=offset, limit=100,
+                                            start_date=start, end_date=end)
         if isinstance(page, dict):  # 念のため dict 形式にも対応
             page = page.get("activityList") or page.get("activities") or []
         acts.extend(page)
+        print(f"  {len(acts)} 件取得済み...")
         if len(page) < 100:
             return acts
         offset += 100
@@ -90,7 +94,7 @@ def main():
         token = auth.obtain_token(resolve_api_key())
 
     end = date.today()
-    start = end - timedelta(days=DAYS)
+    start = None if DAYS == 0 else end - timedelta(days=DAYS)
     with GarminPersonalApiClient(token.access_token) as client:
         acts = fetch(client, start, end)
 
