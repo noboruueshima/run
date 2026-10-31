@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: "0 23 * * *"   # 毎日 08:00 JST（UTC 23:00）
   workflow_dispatch:        # 手動実行ボタン
+    inputs:
+      fetch_days:
+        description: "何日分さかのぼるか（0 = 全期間）"
+        default: "14"
 
 permissions:
   contents: write
@@ -24,6 +28,7 @@ jobs:
         env:
           GARMIN_PERSONAL_API_KEY: ${{ secrets.GARMIN_PERSONAL_API_KEY }}
           TZ: Asia/Tokyo
+          FETCH_DAYS: ${{ inputs.fetch_days }}
         run: python fetch_activities.py
 
       - name: Commit if changed
