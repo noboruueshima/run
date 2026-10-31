@@ -31,10 +31,16 @@ jobs:
           FETCH_DAYS: ${{ inputs.fetch_days }}
         run: python fetch_activities.py
 
+      - name: Fetch 1km splits (long runs & races)
+        env:
+          GARMIN_PERSONAL_API_KEY: ${{ secrets.GARMIN_PERSONAL_API_KEY }}
+          TZ: Asia/Tokyo
+        run: python fetch_splits.py
+
       - name: Commit if changed
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add data/activities.csv
+          git add data/
           git diff --cached --quiet || git commit -m "Update activities $(date +%F)"
           git push
