@@ -44,10 +44,10 @@ jobs:
           git add data/
           git diff --cached --quiet || git commit -m "Update activities $(date +%F)"
           git push
-          
-     - name: Upload CSVs to Google Drive
-            env:
-            GDRIVE_SA_KEY: ${{ secrets.GDRIVE_SA_KEY }}
-            GDRIVE_ACTIVITIES_FILE_ID: 1Ql3I-HXg2h8n8Wt3dW1968hroZ4iyuUj
-            GDRIVE_SPLITS_FILE_ID: 12A8tFFsN2QxOgfQK_9aYI0ZQEueh4hOD
-      run: python upload_to_drive.py
+
+      - name: Upload CSVs to Google Drive
+        env:
+          GDRIVE_SA_KEY: ${{ secrets.GDRIVE_SA_KEY }}
+          GDRIVE_ACTIVITIES_FILE_ID: 1Ql3I-HXg2h8n8Wt3dW1968hroZ4iyuUj
+          GDRIVE_SPLITS_FILE_ID: 12A8tFFsN2QxOgfQK_9aYI0ZQEueh4hOD
+        run: python upload_to_drive.py
