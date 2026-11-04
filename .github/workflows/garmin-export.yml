@@ -2,7 +2,7 @@ name: Garmin export
 
 on:
    schedule:
-    - cron: "37 20 * * *"   # 毎日 05:37 JST（UTC 20:37）。0分ちょうどは遅延しやすいので避ける  
+   - cron: "23 22 * * *"   # 毎日 07:23 JST（UTC 22:23）。朝ラン後に更新し、0分ちょうどは避ける
   workflow_dispatch:        # 手動実行ボタン
     inputs:
       fetch_days:
