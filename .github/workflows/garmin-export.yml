@@ -5,6 +5,10 @@ on:
     - cron: "23 22 * * *"   # 毎日 07:23 JST（UTC 22:23）
   workflow_dispatch:        # 手動実行ボタン
 
+concurrency:
+  group: garmin-export
+  cancel-in-progress: false
+  
 permissions:
   contents: write
 
